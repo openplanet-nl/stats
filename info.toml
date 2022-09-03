@@ -3,6 +3,3 @@ name = "Stats"
 author = "Miss"
 category = "Utilities"
 blocks = [ "Plugin_Stats" ]
-
-[script]
-imports = [ "Time.as" ]
