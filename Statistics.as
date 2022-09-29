@@ -13,12 +13,28 @@ class Statistics
 
 	string GetPath()
 	{
-		return IO::FromDataFolder("Stats.json");
+		return IO::FromStorageFolder("Stats.json");
+	}
+
+	void CheckForLegacyPath()
+	{
+		// Check if Stats.json exists in the user's own folder. If it does, move it to PluginStorage.
+		string legacyPath = IO::FromDataFolder("Stats.json");
+		if (IO::FileExists(legacyPath)) {
+			warn("Migrating Stats.json from user folder to PluginStorage!");
+			IO::Move(legacyPath, GetPath());
+		}
 	}
 
 	void Load()
 	{
-		auto js = Json::FromFile(GetPath());
+		string path = GetPath();
+
+		if (!IO::FileExists(path)) {
+			CheckForLegacyPath();
+		}
+
+		auto js = Json::FromFile(path);
 		if (js.GetType() == Json::Type::Null) {
 			print("No data found in Stats.json file. Starting fresh!");
 			return;
