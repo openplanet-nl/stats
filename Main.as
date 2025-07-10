@@ -59,8 +59,13 @@ void Main()
 		auto serverInfo = cast<CGameCtnNetServerInfo>(app.Network.ServerInfo);
 		if (serverInfo !is null && serverInfo.ServerLogin != "") {
 			g_stats.OnlineTime++;
+#if TMNEXT || MP4
 		} else if (app.RootMap !is null && app.Editor is null) {
 			g_stats.SoloTime++;
+#elif TURBO
+		} else if (app.Challenge !is null && app.Editor is null) {
+			g_stats.SoloTime++;
+#endif
 		}
 
 		if (app.Editor !is null) {
