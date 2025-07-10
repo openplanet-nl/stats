@@ -27,10 +27,10 @@ void RenderMenu()
 		UI::Separator();
 		RenderStat(Icons::ClockO, "Map editor time", Time::Format(g_stats.MapEditorTime * 1000, false));
 		RenderStat(Icons::ClockO, "Map editor test time", Time::Format(g_stats.MapEditorTestTime * 1000, false));
-
+#if TMNEXT
 		UI::Separator();
 		RenderStat(Icons::ClockO, "Skin editor time", Time::Format(g_stats.SkinEditorTime * 1000, false));
-
+#endif
 		UI::Separator();
 		RenderStat(Icons::ClockO, "Mediatracker time", Time::Format(g_stats.MediaTrackerTime * 1000, false));
 
@@ -69,10 +69,15 @@ void Main()
 				if (app.CurrentPlayground !is null) {
 					g_stats.MapEditorTestTime++;
 				}
+#if TMNEXT
 			} else if (cast<CGameEditorSkin>(app.Editor) !is null) {
 				g_stats.SkinEditorTime++;
 			} else if (cast<CGameEditorMediaTracker>(app.Editor) !is null) {
 				g_stats.MediaTrackerTime++;
+#else
+			} else if (cast<CGameCtnMediaTracker>(app.Editor) !is null) {
+				g_stats.MediaTrackerTime++;
+#endif
 			}
 		}
 
