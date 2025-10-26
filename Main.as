@@ -28,8 +28,10 @@ void RenderMenu()
 		RenderStat(Icons::ClockO, "Map editor time", Time::Format(g_stats.MapEditorTime * 1000, false));
 		RenderStat(Icons::ClockO, "Map editor test time", Time::Format(g_stats.MapEditorTestTime * 1000, false));
 
+#if !FOREVER
 		UI::Separator();
 		RenderStat(Icons::ClockO, "Skin editor time", Time::Format(g_stats.SkinEditorTime * 1000, false));
+#endif
 
 		UI::Separator();
 		RenderStat(Icons::ClockO, "Mediatracker time", Time::Format(g_stats.MediaTrackerTime * 1000, false));
@@ -44,9 +46,48 @@ void OnDestroyed()
 	g_stats.Save();
 }
 
+bool InMap()
+{
+#if MP41 || TMNEXT
+	return GetApp().RootMap !is null;
+#else
+	return GetApp().Challenge !is null;
+#endif
+}
+
+bool InMapEditor()
+{
+#if FOREVER
+	auto app = cast<CTrackMania>(GetApp());
+	return cast<CTrackManiaEditorCatalog>(app.Editor) !is null;
+#else
+	return cast<CGameCtnEditorFree>(GetApp().Editor) !is null;
+#endif
+}
+
+bool InMediaTracker()
+{
+#if FOREVER
+	auto app = cast<CTrackMania>(GetApp());
+	return cast<CGameCtnMediaTracker>(app.Editor) !is null;
+#else
+	return cast<CGameEditorMediaTracker>(GetApp().Editor) !is null;
+#endif
+}
+
+bool InServer()
+{
+	auto serverInfo = cast<CGameCtnNetServerInfo>(GetApp().Network.ServerInfo);
+#if FOREVER
+	return serverInfo !is null && serverInfo.ServerHostName != "";
+#else
+	return serverInfo !is null && serverInfo.ServerLogin != "";
+#endif
+}
+
 void Main()
 {
-	auto app = GetApp();
+	auto app = cast<CTrackMania>(GetApp());
 
 	@g_fontBold = UI::LoadFont("DroidSans-Bold.ttf");
 
@@ -56,22 +97,25 @@ void Main()
 	while (true) {
 		g_stats.TotalTime++;
 
-		auto serverInfo = cast<CGameCtnNetServerInfo>(app.Network.ServerInfo);
-		if (serverInfo !is null && serverInfo.ServerLogin != "") {
+		if (InServer()) {
 			g_stats.OnlineTime++;
-		} else if (app.RootMap !is null && app.Editor is null) {
+		} else if (InMap() && !InMapEditor()) {
 			g_stats.SoloTime++;
 		}
 
 		if (app.Editor !is null) {
-			if (cast<CGameCtnEditorFree>(app.Editor) !is null) {
+			if (InMapEditor()) {
 				g_stats.MapEditorTime++;
 				if (app.CurrentPlayground !is null) {
 					g_stats.MapEditorTestTime++;
 				}
+
+#if !FOREVER
 			} else if (cast<CGameEditorSkin>(app.Editor) !is null) {
 				g_stats.SkinEditorTime++;
-			} else if (cast<CGameEditorMediaTracker>(app.Editor) !is null) {
+#endif
+
+			} else if (InMediaTracker()) {
 				g_stats.MediaTrackerTime++;
 			}
 		}
