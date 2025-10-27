@@ -106,14 +106,12 @@ void Main()
 		if (app.Editor !is null) {
 			if (InMapEditor()) {
 				g_stats.MapEditorTime++;
-				if (app.CurrentPlayground !is null) {
-#if TURBO
-					if (app.CurrentPlayground.GameTerminals.Length > 0) {
+				if (app.CurrentPlayground !is null
+#if !FOREVER
+					&& app.CurrentPlayground.GameTerminals.Length > 0
 #endif
-						g_stats.MapEditorTestTime++;
-#if TURBO
-					}
-#endif
+				) {
+					g_stats.MapEditorTestTime++;
 				}
 
 #if TMNEXT
