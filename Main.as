@@ -28,7 +28,7 @@ void RenderMenu()
 		RenderStat(Icons::ClockO, "Map editor time", Time::Format(g_stats.MapEditorTime * 1000, false));
 		RenderStat(Icons::ClockO, "Map editor test time", Time::Format(g_stats.MapEditorTestTime * 1000, false));
 
-#if !FOREVER
+#if !FOREVER && !TURBO
 		UI::Separator();
 		RenderStat(Icons::ClockO, "Skin editor time", Time::Format(g_stats.SkinEditorTime * 1000, false));
 #endif
@@ -67,7 +67,7 @@ bool InMapEditor()
 
 bool InMediaTracker()
 {
-#if FOREVER
+#if FOREVER || TURBO
 	auto app = cast<CTrackMania>(GetApp());
 	return cast<CGameCtnMediaTracker>(app.Editor) !is null;
 #else
@@ -107,10 +107,16 @@ void Main()
 			if (InMapEditor()) {
 				g_stats.MapEditorTime++;
 				if (app.CurrentPlayground !is null) {
-					g_stats.MapEditorTestTime++;
+#if TURBO
+					if (app.CurrentPlayground.GameTerminals.Length > 0) {
+#endif
+						g_stats.MapEditorTestTime++;
+#if TURBO
+					}
+#endif
 				}
 
-#if !FOREVER
+#if !FOREVER && !TURBO
 			} else if (cast<CGameEditorSkin>(app.Editor) !is null) {
 				g_stats.SkinEditorTime++;
 #endif
