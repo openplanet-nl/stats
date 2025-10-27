@@ -67,7 +67,7 @@ bool InMapEditor()
 
 bool InMediaTracker()
 {
-#if FOREVER || TURBO
+#if !TMNEXT
 	auto app = cast<CTrackMania>(GetApp());
 	return cast<CGameCtnMediaTracker>(app.Editor) !is null;
 #else
