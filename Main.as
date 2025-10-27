@@ -28,7 +28,7 @@ void RenderMenu()
 		RenderStat(Icons::ClockO, "Map editor time", Time::Format(g_stats.MapEditorTime * 1000, false));
 		RenderStat(Icons::ClockO, "Map editor test time", Time::Format(g_stats.MapEditorTestTime * 1000, false));
 
-#if !FOREVER && !TURBO
+#if TMNEXT
 		UI::Separator();
 		RenderStat(Icons::ClockO, "Skin editor time", Time::Format(g_stats.SkinEditorTime * 1000, false));
 #endif
@@ -116,7 +116,7 @@ void Main()
 #endif
 				}
 
-#if !FOREVER && !TURBO
+#if TMNEXT
 			} else if (cast<CGameEditorSkin>(app.Editor) !is null) {
 				g_stats.SkinEditorTime++;
 #endif

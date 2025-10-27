@@ -7,7 +7,7 @@ class Statistics
 	uint64 MapEditorTime = 0;
 	uint64 MapEditorTestTime = 0;
 
-#if !FOREVER && !TURBO
+#if TMNEXT
 	uint64 SkinEditorTime = 0;
 #endif
 
@@ -46,7 +46,7 @@ class Statistics
 		OnlineTime = Text::ParseUInt64(js.Get("onlinetime", Json::Value("0")));
 		MapEditorTime = Text::ParseUInt64(js.Get("mapeditortime", Json::Value("0")));
 		MapEditorTestTime = Text::ParseUInt64(js.Get("mapeditortesttime", Json::Value("0")));
-#if !FOREVER && !TURBO
+#if TMNEXT
 		SkinEditorTime = Text::ParseUInt64(js.Get("skineditortime", Json::Value("0")));
 #endif
 		MediaTrackerTime = Text::ParseUInt64(js.Get("mediatrackertime", Json::Value("0")));
@@ -60,7 +60,7 @@ class Statistics
 		js["onlinetime"] = Text::Format("%lld", OnlineTime);
 		js["mapeditortime"] = Text::Format("%lld", MapEditorTime);
 		js["mapeditortesttime"] = Text::Format("%lld", MapEditorTestTime);
-#if !FOREVER && !TURBO
+#if TMNEXT
 		js["skineditortime"] = Text::Format("%lld", SkinEditorTime);
 #endif
 		js["mediatrackertime"] = Text::Format("%lld", MediaTrackerTime);
